@@ -23,6 +23,7 @@ var arr2: [Int] = [8, 8]
 
 print(sumLargeNumbers(firstArr: arr1, secondArr: arr2)) // [1, 0, 0]
 ```
+---
 
 Дан массив целых чисел. Некоторые числа встречаются в массиве по нескольку раз. Написать функцию, которая вынимает из массива k наиболее часто встречающихся элементов. 
 
@@ -83,4 +84,31 @@ func findTheMostCommonElements (array: [Int], k: Int) -> [Int] {
 let items = [1, 2, 3, 4, 5, 3, 2, 1, 2, 2]
 print(findTheMostCommonElements(array: items, k: 3)) // [2, 1, 3]
 ```
+---
+
+Дана строка. Проверить, есть ли в ней буквы из которых можно собрать слово "TINKOFF"
+
+```swift
+func checkStr(str: String, template: String) -> Bool {
+    guard !str.isEmpty, str.count < template.count else { return false }
+    
+    // Получаем словарь частот из исходной строки и из строки-шаблона
+    let dictStr = str.reduce(into: [:]) {$0[$1, default: 0] += 1}
+    let dictTemplate = template.reduce(into: [:]) {$0[$1, default: 0] += 1}
+    
+    // Проходим по ключам-значениям словаря частот dictTemplate, проверяем наличие символов и их количество (оно должно быть больше или равно) в dictStr
+    for (key, value) in dictTemplate {
+        if dictStr[key, default: 0] < value {
+            return false
+        }
+    }
+    return true
+}
+
+var str = "AbTNIONdsKmOFtFYF"
+var template = "TINKOFF" 
+
+print(checkStr(str: str, template: template)) // true
+```
+---
 
