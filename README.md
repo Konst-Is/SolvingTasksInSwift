@@ -112,3 +112,82 @@ print(checkStr(str: str, template: template)) // true
 ```
 ---
 
+Составьте цепочку из домино.
+Вычислите способ упорядочить заданный набор домино таким образом, чтобы они образовали правильную цепочку (точки на одной половине камня совпадают с точками на соседней половине соседнего камня) и чтобы точки на половинках камней, у которых нет соседей (первый и последний камень), совпадали друг с другом.
+Например, для домино [2|1], [2|3] и [1|3] вы должны получить что-то вроде [1|2] [2|3] [3|1] или [3|2] [2|1] [1|3] или [1|3] [3|2] [2|1] и т. д., где первое и последнее числа одинаковы.
+Для домино [1|2], [4|1] и [2|3] полученная цепочка не верна: первые и последние числа [4|1] [1|2] [2|3] не совпадают. 4 != 3
+
+```swift
+func isChained(_ input: [(Int, Int)]) -> Bool {
+    guard !input.isEmpty else { return false }
+    if input.count == 1 {
+        if input[0].0 != input[0].1 {
+            return false
+        } else {
+            return true
+        }
+    }
+    if input.filter({ $0.0 == $0.1 }).count == input.count {
+        return false
+    }
+    var uniqNumbers = Set<Int>()
+    uniqNumbers = input.reduce(into: uniqNumbers){ $0.insert($1.0) }
+    uniqNumbers = input.reduce(into: uniqNumbers){ $0.insert($1.1) }
+    for number in uniqNumbers {
+        let total = input.filter{ $0.0 == number }.count + input.filter{ $0.1 == number }.count
+        if total % 2 == 1 || input.filter({ $0.0 == $0.1 }).count == total / 2 {
+            return false
+        } else {
+            for domino in input.filter({ $0.0 == number }) {
+                if input.filter({ $0.0 == domino.1 && $0.1 == domino.0 }).count == total / 2 {
+                    return false
+                }
+            }
+        }
+    }
+    return true
+}
+
+struct Dominoes {
+    let dominoes: [(Int, Int)]
+    init(_ dominoes: [(Int, Int)]) {
+    self.dominoes = dominoes
+    }
+    var chained: Bool {
+        guard !dominoes.isEmpty else { return false }
+        if dominoes.count == 1 {
+            if dominoes[0].0 != dominoes[0].1 {
+                return false
+            } else {
+                return true
+            }
+        }
+        if dominoes.filter({ $0.0 == $0.1 }).count == dominoes.count {
+            return false
+        }
+        var uniqNumbers = Set<Int>()
+        uniqNumbers = dominoes.reduce(into: uniqNumbers){ $0.insert($1.0) }
+        uniqNumbers = dominoes.reduce(into: uniqNumbers){ $0.insert($1.1) }
+        for number in uniqNumbers {
+            let total = dominoes.filter{ $0.0 == number }.count + dominoes.filter{ $0.1 == number }.count
+            if total % 2 == 1 || dominoes.filter({ $0.0 == $0.1 }).count == total / 2 {
+                return false
+            } else {
+                for domino in dominoes.filter({ $0.0 == number }) {
+                    if dominoes.filter({ $0.0 == domino.1 && $0.1 == domino.0 }).count == total / 2 {
+                        return false
+                    }
+                }
+            }
+        }
+        return true
+    }
+}
+```
+
+
+
+
+
+
+
