@@ -149,10 +149,9 @@ func isChained(_ input: [(Int, Int)]) -> Bool {
 }
 
 struct Dominoes {
+
     let dominoes: [(Int, Int)]
-    init(_ dominoes: [(Int, Int)]) {
-    self.dominoes = dominoes
-    }
+
     var chained: Bool {
         guard !dominoes.isEmpty else { return false }
         if dominoes.count == 1 {
@@ -182,8 +181,48 @@ struct Dominoes {
         }
         return true
     }
+
+    init(_ dominoes: [(Int, Int)]) {
+    self.dominoes = dominoes
+    }
+
 }
 ```
+---
+
+Возьмите следующий IPv4-адрес: 128.32.10.1
+Этот адрес состоит из 4 октетов, где каждый октет - это один байт (или 8 бит).
+Первый октет 128 имеет двоичное представление: 10000000
+2-й октет 32 имеет двоичное представление: 00100000
+3-й октет 10 имеет двоичное представление: 00001010
+4-й октет 1 имеет двоичное представление: 00000001
+Таким образом, 128.32.10.1 == 10000000.00100000.00001010.00000001
+Поскольку приведенный выше IP-адрес состоит из 32 бит, мы можем представить его как беззнаковое 32-битное число: 2149583361.
+Напешите функцию, которая принимает беззнаковое 32-битное число и возвращает строковое представление его IPv4-адреса.
+
+```swift
+func ipv4(of i32: UInt32) -> String {
+    var result = [String]()
+    var str = String(i32, radix: 2)
+    str = String(repeating: "0", count: 32 - str.count) + str
+    var count = 0
+    var number = ""
+    for digit in str {
+        count += 1
+        if count == 8 {
+            number += String(digit)
+            result.append(String(Int(number, radix: 2)!))
+            number = ""
+            count = 0
+        } else {
+            number += String(digit)
+        }
+    }
+    return result.joined(separator: ".")
+}
+```
+
+
 
 
 
