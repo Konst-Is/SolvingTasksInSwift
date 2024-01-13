@@ -612,6 +612,96 @@ func parse(_ str: String) -> Node? {
     return node
 }
 ```
+---
+
+Написать функцию, которая форматирует длительность, заданную в виде количества секунд, удобным для человека способом.
+
+Функция должна принимать неотрицательное целое число. Если оно равно нулю, она просто возвращает "сейчас". В противном случае продолжительность выражается в виде комбинации лет, дней, часов, минут и секунд.
+
+Это гораздо проще понять на примере:
+
+```
+* For seconds = 62, your function should return 
+    "1 minute and 2 seconds"
+* For seconds = 3662, your function should return
+    "1 hour, 1 minute and 2 seconds"
+```
+
+```swift
+func formatDuration(_ seconds: Int) -> String {
+    guard seconds > 0 else { return "now" }
+    var (yearStr, dayStr, hourStr, minuteStr, secondStr) = ("", "", "", "", "")
+    var remainder = 0
+    var year = seconds / (365 * 24 * 60 * 60)
+    remainder = seconds - year * 365 * 24 * 60 * 60
+    var day = remainder / (24 * 60 * 60)
+    remainder -= day * 24 * 60 * 60
+    var hour = remainder / (60 * 60)
+    remainder -= hour * 60 * 60
+    var minute = remainder / 60
+    let second = remainder - minute * 60
+
+    switch second {
+    case 0: secondStr = ""
+    case 60:
+        secondStr = ""
+        minute += 1
+    case 1 where (year + day + hour + minute) != 0: secondStr = " and \(second) second"
+    case 1: secondStr = "\(second) second"
+    case (1...59) where year + day + hour + minute != 0: secondStr = " and \(second) seconds"
+    default: secondStr = "\(second) seconds"
+    }
+
+    switch minute {
+    case 0: minuteStr = ""
+    case 60:
+        minuteStr = ""
+        hour += 1
+    case 1 where second == 0 && (year + day + hour) != 0: minuteStr = " and \(minute) minute"
+    case 1 where (year + day + hour) != 0: minuteStr = ", \(minute) minute"
+    case 1: minuteStr = "\(minute) minute"
+    case (1...59) where second == 0 && (year + day + hour) != 0: minuteStr = " and \(minute) minutes"
+    case (1...59) where (year + day + hour) != 0: minuteStr = ", \(minute) minutes"
+    default: minuteStr = "\(minute) minutes"
+    }
+
+    switch hour {
+    case 0: hourStr = ""
+    case 24:
+        hourStr = ""
+        day += 1
+    case 1 where (minute + second) == 0 && (year + day) != 0: hourStr = " and \(hour) hour"
+    case 1 where (year + day) != 0: hourStr = ", \(hour) hour"
+    case 1: hourStr = "\(hour) hour"
+    case (1...23) where (minute + second) == 0 && (year + day) != 0: hourStr = " and \(hour) hours"
+    case (1...23) where year + day != 0: hourStr = ", \(hour) hours"
+    default: hourStr = "\(hour) hours"
+    }
+
+    switch day {
+    case 0: dayStr = ""
+    case 365:
+        dayStr = ""
+        year += 1
+    case 1 where year != 0 && (hour + minute + second) == 0: dayStr = " and \(day) day"
+    case 1 where year != 0: dayStr = ", \(day) day"
+    case 1: dayStr = "\(day) day"
+    case (1...364) where year != 0 && (hour + minute + second) == 0: dayStr = " and \(day) days"
+    case (1...364) where year != 0: dayStr = ", \(day) days"
+    default: dayStr = "\(day) days"
+    }
+
+    switch year {
+    case 0: yearStr = ""
+    case 1: yearStr = "\(year) year"
+    default: yearStr = "\(year) years"
+    }
+    
+    return yearStr + dayStr + hourStr + minuteStr + secondStr
+}
+```
+
+
 
 
 
