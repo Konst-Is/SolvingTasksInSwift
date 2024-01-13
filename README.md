@@ -503,6 +503,35 @@ func toPerfoCard(_ message: String) -> [[Character]] {
     return result
 }
 ```
+---
+
+Напишите функцию, которая получает две строки и возвращает n, где n равно количеству символов, на которое нужно сдвинуть первую строку вперед, чтобы она совпала со второй. 
+Проверка должна быть чувствительна к регистру.
+
+Например, возьмем строки "fatigue" и "tiguefa". В этом случае первая строка была сдвинута на 5 символов вперед, чтобы получить вторую строку, поэтому будет возвращено 5.
+
+Если вторая строка не является корректным вращением первой строки, метод возвращает nil.
+
+```swift
+func shiftedDiff(_ s1: String, _ s2: String) -> Int? {
+    guard s1.count == s2.count && !s1.isEmpty && !s2.isEmpty else { return nil }
+    guard s1 != s2 else { return 0 }
+    var result: Int?
+    var count = 0
+    var tempS1 = s1
+    while count < s1.count - 1 {
+        count += 1
+        let lastLetter = tempS1.removeLast()
+        tempS1 = String(lastLetter) + tempS1
+        if tempS1 == s2 {
+            result = count
+            break
+        }
+    }
+    return result
+}
+```
+
 
 
 
