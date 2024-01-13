@@ -688,6 +688,97 @@ func sumOfDivided(_ l: [Int]) -> [(Int, Int)] {
     return result
 }
 ```
+---
+
+
+Дан двумерный массив и количество поколений, вычислите n временных шагов игры Конвея "Игра в жизнь".
+
+Правила игры таковы:
+
+Любая живая клетка с менее чем двумя живыми соседями умирает, как если бы это было вызвано перенаселением.
+Любая живая клетка с более чем тремя живыми соседями погибает, как при перенаселении.
+Любая живая клетка с двумя или тремя живыми соседями продолжает жить в следующем поколении.
+Любая мертвая клетка с ровно тремя живыми соседями становится живой клеткой.
+Соседями каждой клетки являются 8 клеток, расположенных непосредственно вокруг нее (т. е. окрестности Мура). 
+Вселенная бесконечна в обоих измерениях x и y, и все клетки изначально мертвы - за исключением тех, которые указаны в аргументах. 
+Возвращаемое значение должно представлять собой двумерный массив, обрезанный вокруг всех живых клеток. (Если живых клеток нет, то возвращается [[]]).
+
+```swift
+func getGeneration(_ cells: [[Int]], generations: Int) -> [[Int]] {
+    
+    guard !cells.isEmpty else { return [[]] }
+    guard generations > 0 else { return cells }
+    
+    func createNewFild(_ field: [[Int]]) -> [[Int]] {
+        var result: [[Int]] = []
+        let rowSize = field[0].count
+        for row in field {
+            result.append([0, 0] + row + [0, 0])
+        }
+        let zeroArray = [Array(repeating: 0, count: rowSize + 4)]
+        result = zeroArray + zeroArray + result + zeroArray + zeroArray
+        return result
+    }
+    
+    func transformField(_ field: [[Int]]) -> [[Int]] {
+        var result = field
+        for (i, row) in field.enumerated() where i > 0 && i < field.count - 1 {
+            for (j, _) in row.enumerated() where j > 0 && j < row.count - 1 {
+                let sumOfAlive = field[i - 1][j - 1] + field[i - 1][j] + field[i - 1][j + 1] + field[i][j + 1] + field[i + 1][j + 1] + field[i + 1][j] + field[i][j - 1] + field[i + 1][j - 1]
+                switch sumOfAlive {
+                case 0...1 where field[i][j] == 1: result[i][j] = 0
+                case 2...3 where field[i][j] == 1: result[i][j] = 1
+                case 3... where field[i][j] == 1: result[i][j] = 0
+                case 3 where field[i][j] == 0: result[i][j] = 1
+                default: break
+                }
+            }
+        }
+        return result
+    }
+    
+    func cropArray(_ field: [[Int]]) -> [[Int]] {
+        
+        var minI = field.count
+        var maxI = 0
+        var minJ = field[0].count
+        var maxJ = 0
+        
+        for (i, row) in field.enumerated() {
+            for (j, _) in row.enumerated() {
+                if field[i][j] == 1 {
+                    minI = min(minI, i)
+                    minJ = min(minJ, j)
+                    maxI = max(maxI, i)
+                    maxJ = max(maxJ, j)
+                }
+            }
+        }
+        
+        var result: [[Int]] = Array(repeating: Array(repeating: 0, count: (maxJ - minJ + 1)), count: (maxI - minI + 1))
+        
+        for (i, row) in field.enumerated() where (minI...maxI).contains(i) {
+            for (j, _) in row.enumerated() where (minJ...maxJ).contains(j) {
+                if field[i][j] == 1 {
+                    result[i - minI][j - minJ] = 1
+                }
+            }
+        }
+        return result
+    }
+    
+    var field: [[Int]] = cells
+    
+    for _ in 1...generations {
+        field = cropArray(transformField(createNewFild(field)))
+    }
+  
+    return field
+}
+```
+
+
+
 
 
 
