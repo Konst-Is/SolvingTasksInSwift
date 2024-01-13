@@ -348,7 +348,8 @@ func splitTheString(_ n: Int) -> [Int] {
     }
     return result
 }
-
+```
+```swift
 func encode(_ s: String, _ shift: Int) -> [String] {
     let strArr = s.map{ $0 }
     let shift = UInt8(shift)
