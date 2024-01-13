@@ -280,11 +280,11 @@ func spiral(_ n : Int) -> [[Int]] {
 
 Пример:
 
-`
+```
   A         B          C
 |1 2|  x  |3 2|  =  | 5 4|
 |3 2|     |1 1|     |11 8|
-`
+```
 
 ```swift
 func matrixMultiplication(_ a:[[Int]], _ b:[[Int]]) -> [[Int]] {
