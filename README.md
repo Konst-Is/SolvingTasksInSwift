@@ -358,6 +358,81 @@ func recoverSecret(from triplets: [[String]]) -> String {
     return result
 }
 ```
+---
+
+Напишите функцию AlternatingSplit(), которая берет один список и делит его узлы на два меньших списка. 
+Вложенные списки должны быть составлены из чередующихся элементов исходного списка. 
+Так, если исходный список имеет вид a -> b -> a -> b -> a -> null, то один подсписок должен быть a -> a -> a -> null, а другой - b -> b -> null.
+
+Для простоты мы используем объект Context для хранения и возврата состояния двух связанных списков.
+Объект Context, содержащий два мутировавших списка, должен быть возвращен функцией AlternatingSplit().
+
+Если переданный головной узел является null/None/nil или одиночным узлом, произойдет ошибка.
+
+```
+var list = 1 -> 2 -> 3 -> 4 -> 5 -> null
+alternatingSplit(list).first === 1 -> 3 -> 5 -> null
+alternatingSplit(list).second === 2 -> 4 -> null
+```
+
+```swift
+class Node {
+    var data: Int
+    var next: Node?
+    init(_ data: Int) {
+        self.data = data
+    }
+}
+
+struct Context {
+    var source: Node?
+    var dest: Node?
+    mutating func appendSource(_ node: Node?) {
+        if var head = self.source {
+            while head.next != nil {
+                head = head.next!
+            }
+            head.next = node
+        } else {
+            self.source = node
+        }
+    }
+    mutating func appendDest(_ node: Node?) {
+        if var head = self.dest {
+            while head.next != nil {
+                head = head.next!
+            }
+            head.next = node
+        } else {
+            self.dest = node
+        }
+    }
+}
+
+func alternatingSplit(head : Node?) throws -> Context? {
+    guard head != nil else { throw AlternatingSplitError.listIsEmpty }
+    guard head?.next != nil else { throw AlternatingSplitError.listHasOnlyOneNode }
+    var result = Context(source: Node(head!.data), dest: Node(head!.next!.data))
+    var currentNode: Node? = head?.next?.next
+    var flag = true
+    while currentNode != nil {
+        if flag {
+            result.appendSource(Node(currentNode!.data))
+            flag.toggle()
+        } else {
+            result.appendDest(Node(currentNode!.data))
+            flag.toggle()
+        }
+        currentNode = currentNode?.next
+    }
+    return result
+}
+
+enum AlternatingSplitError: Error {
+    case listIsEmpty
+    case listHasOnlyOneNode
+}
+```
 
 
 
