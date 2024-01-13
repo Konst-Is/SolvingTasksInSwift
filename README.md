@@ -581,6 +581,24 @@ func flattenTwoLevels(_ arr: [Any]) -> [Any] {
 }
 ```
 
+Создайте функцию parse, принимающую ровно один аргумент string / $string / s / strrep ( или аналогичный, в зависимости от языка ), который представляет собой строковое представление связанного списка. 
+Ваша функция должна возвращать соответствующий связанный список, построенный из экземпляров класса Node. 
+
+Строковое представление списка имеет следующий формат: значение узла, затем пробел, стрелка и еще один пробел (" -> "), затем остальная часть связанного списка. 
+Каждое строковое представление связанного списка будет заканчиваться символом "nil" 
+
+```swift
+func parse(_ str: String) -> Node? {
+    guard str != "nil" else { return nil }
+    let array = str.components(separatedBy: " -> ").compactMap{Int($0)}
+    var node = Node(array.last!, nil)
+    guard array.count != 1 else { return node }
+    for i in stride(from: (array.count - 2), through: 0, by: -1) {
+        node = Node(array[i], node)
+    }
+    return node
+}
+```
 
 
 
