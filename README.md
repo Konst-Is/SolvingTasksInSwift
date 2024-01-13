@@ -776,6 +776,68 @@ func getGeneration(_ cells: [[Int]], generations: Int) -> [[Int]] {
     return field
 }
 ```
+---
+
+
+Кодирование десятичных чисел с помощью факториалов - это способ записи чисел в системе оснований, которая зависит от факториалов, а не от силы чисел.
+В этой системе последняя цифра всегда равна 0 и находится в основании 0! Предыдущая цифра либо 0, либо 1 и имеет основание 1! Предыдущая цифра - 0, 1 или 2 и имеет основание 2! и т. д. В более общем случае предпоследняя цифра всегда равна 0, 1, 2, ..., n и находится в основании n!
+
+
+Пример
+
+Десятичное число 463 кодируется как "341010", потому что:
+
+463 = 3×5! + 4×4! + 1×3! + 0×2! + 1×1! + 0×0!
+
+Если мы ограничены цифрами 0...9, то самое большое число, которое мы можем закодировать, - 10!-1 (= 3628799). Поэтому мы расширим 0...9 буквами A...Z. 
+
+Задача
+
+Нам понадобятся две функции. Первая будет получать десятичное число и возвращать строку с факториальным представлением.
+
+Вторая будет получать строку с факториальным представлением и выдавать десятичное представление.
+
+Заданные числа всегда будут положительными.
+
+```swift
+func dec2FactString(_ nb: Int) -> String {
+    var result = "0"
+    var remainder = nb
+    var index = 2
+    while remainder != 0 {
+        let number = remainder % index
+        result += number < 10 ? String(number) : String(Character(UnicodeScalar(index + 54)!))
+        remainder /= index
+        index += 1
+    }
+
+    return String(result.reversed())
+}
+
+func factString2dDec(_ s: String) -> Int {
+
+// Tail recursive factorial
+    func factorial(_ n: Int) -> Int {
+        func factorialN(_ n: Int, _ acc: Int) -> Int {
+            return n == 0 ? acc : factorialN(n - 1, acc * n)
+        }
+        return factorialN(n, 1)
+    }
+
+    var result = 0
+
+    for (index, letter) in s.reversed().enumerated() where letter != "0" {
+        if ("A"..."Z").contains(letter) {
+            result += Int(letter.asciiValue! - 55) * factorial(index)
+        } else {
+            result += Int(String(letter))! * factorial(index)
+        }
+    }
+    return result
+}
+```
+
+
 
 
 
