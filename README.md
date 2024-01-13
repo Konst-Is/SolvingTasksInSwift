@@ -881,6 +881,37 @@ class RomanNumerals {
   }
 }
 ```
+---
+
+
+Создайте функцию, которая принимает целое положительное число и возвращает следующее большее число, которое может быть образовано перестановкой его цифр. Например:
+
+```
+12 ==> 21
+513 ==> 531
+2017 ==> 2071
+```
+
+Если цифры нельзя переставить, чтобы получить большее число, верните nil.
+
+```swift
+func nextBigger(num: Int) -> Int? {
+    guard num > 11 else { return nil }
+    let arr = String(num).sorted()
+    guard String(num).sorted() != String(num).reversed() else { return nil }
+    var result = num
+    var isEqual = false
+    while !isEqual {
+        result += 1
+        if String(result).sorted() == arr {
+            isEqual = true
+        }
+    }
+  return result
+}
+```
+
+
 
 
 
