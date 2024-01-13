@@ -434,8 +434,74 @@ enum AlternatingSplitError: Error {
 }
 ```
 
+Семен Николаевич Корсаков (изобретатель перфокарт) прислал вам сообщение из 1832 года. Он придумал, как отправить сообщение в будущее, но еще не освоил новые способы передачи. 
+Мы получили от него две перфокарты. На первой карте, насколько я могу судить, есть расшифровка, а на второй - сообщение.
 
+Давайте попробуем создать два метода шифрования и дешифрования, чтобы не оставить нашего нового друга без ответа.
 
+Вы можете использовать предварительно загруженный словарь, называемый шифром. 
+
+Зона нажатия заменена на массивы "A" и "B".
+Чтобы прочитать символ, нужно заменить соответствующие буквы и/или цифры на пустую строку " " (она же дыра).
+Если весь символьный ряд находится на своем месте, то это пробел в строке.
+Длина сообщения может достигать 80 символов.
+
+Пример
+
+```
+[[" ", " ", "B", "B", "B"],
+ ["A", "A", " ", " ", " "],
+ ["0", "0", "0", "0", "0"],
+ ["1", "1", "1", "1", "1"],
+ ["2", "2", "2", "2", "2"],
+ ["3", "3", " ", " ", "3"],
+ ["4", "4", "4", "4", "4"],
+ ["5", " ", "5", "5", "5"],
+ ["6", "6", "6", "6", " "],
+ ["7", "7", "7", "7", "7"],
+ [" ", "8", "8", "8", "8"],
+ ["9", "9", "9", "9", "9"]] // should return "HELLO"
+```
+
+```swift
+func fromPerfoCard(_ card: [[Character]]) -> String {
+    let template: [Character] = ["B", "A", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+    var result = ""
+    for index in 0...79 {
+        var value = [Character]()
+        for (i, row) in card.enumerated() {
+            if index < row.count {
+                if row[index] != template[i] {
+                    value.append(template[i])
+                }
+            }
+        }
+        result.append(encryption.first(where: { $0.value == value })?.key ?? " ")
+    }
+    return result.trimmingCharacters(in: .whitespaces)
+}
+
+func toPerfoCard(_ message: String) -> [[Character]] {
+    let message = message.map{ $0 }
+    let template: [Character] = ["B", "A", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+    var result = [[Character]]()
+    for char in template {
+        result.append(Array(repeating: char, count: message.count))
+    }
+    for (index, symbol) in message.enumerated() {
+        if let hole = encryption[symbol] {
+            for position in hole {
+                for (i, row) in result.enumerated() {
+                    if row[index] == position {
+                        result[i][index] = " "
+                    }
+                }
+            }
+        }
+    }
+    return result
+}
+```
 
 
 
