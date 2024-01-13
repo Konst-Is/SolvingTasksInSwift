@@ -836,6 +836,53 @@ func factString2dDec(_ s: String) -> Int {
     return result
 }
 ```
+---
+
+
+Напишите две функции, преобразующие римскую цифру в целое число и обратно.
+
+Современные римские цифры записываются, выражая каждую цифру отдельно, начиная с самой левой цифры и пропуская любую цифру со значением ноль. 
+Римскими цифрами 1990 обозначается так: 1000=M, 900=CM, 90=XC; в результате получается MCMXC. 
+2008 год записывается как 2000=MM, 8=VIII; или MMVIII. В 1666 году каждый римский символ используется в порядке убывания: MDCLXVI.
+
+Диапазон ввода: 1 <= n < 4000
+
+```swift
+class RomanNumerals {
+
+  static func toRoman(_ number: Int) -> String {
+      guard (1...3999).contains(number) else { return "Enter an integer number between 1 and 3999" }
+      let arabicRomanicDictionary = [1: "I", 4: "IV", 5: "V", 9: "IX", 10: "X", 40: "XL", 50: "L", 90: "XC", 100: "C", 400: "CD", 500: "D", 900: "CM", 1000: "M"]
+      var result = ""
+      var tempNumber = number
+      for (digit, letters) in arabicRomanicDictionary.sorted(by: {$1.key < $0.key}) {
+          let count = tempNumber / digit
+          result += String(repeating: letters, count: count)
+          tempNumber %= digit
+      }
+
+      return result
+  }
+  
+  static func fromRoman(_ roman: String) -> Int {
+      let arabicRomanicDictionary = ["I": 1, "V": 5, "X": 10, "L": 50, "C": 100, "D": 500, "M": 1000]
+      var result = 0
+      var first = 0
+      for letter in roman.reversed() {
+          let second = arabicRomanicDictionary[String(letter)] ?? 0
+          if second >= first {
+              result += second
+          } else {
+              result -= second
+          }
+          first = second
+      }
+      return result
+  }
+}
+```
+
+
 
 
 
