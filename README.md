@@ -388,7 +388,8 @@ func encode(_ s: String, _ shift: Int) -> [String] {
     }
     return !str5.isEmpty ? [str1, str2, str3, str4, str5] : [str1, str2, str3, str4]
 }
-
+```
+```swift
 func decode(_ arr: [String]) -> String {
     var codeStr = arr.reduce("", +)
     let first = codeStr.removeFirst().asciiValue!
