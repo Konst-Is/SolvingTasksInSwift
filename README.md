@@ -305,6 +305,111 @@ func matrixMultiplication(_ a:[[Int]], _ b:[[Int]]) -> [[Int]] {
 ```
 ---
 
+Шифрование Цезаря заключается в замене каждой буквы открытого текста (буквы открытого текста - от "a" до "z" или от "A" до "Z") на другую на фиксированное количество позиций вверх или вниз по алфавиту. 
+Это смещение на несколько позиций называется "сдвигом" или "поворотом" сообщения. Например, при сдвиге на 1 буква a становится b, а A становится B; сдвиг циклический, поэтому при сдвиге на 1 буква z становится a, а Z становится A.
+Они меняют "поворот" при каждом новом сообщении. Это "rotate" является префиксом для их сообщения после того, как оно закодировано. Префикс состоит из двух букв, вторая из которых сдвинута относительно первой с помощью "поворота", а первая - это первая буква некодированного сообщения после понижения.
+Например, если "поворот" равен 2, то первая буква некодированного сообщения - J, префикс должен быть 'jl'.
+Чтобы уменьшить риск, они разрезают закодированное сообщение и префикс на пять частей, так как у них всего пять бегунов, и у каждого бегуна только одна часть.
+Если возможно, сообщение равномерно распределяется между пятью бегущими строками; если это невозможно, части 1, 2, 3, 4 будут длиннее, а часть 5 короче. 
+Пятая часть может иметь длину, равную остальным, или быть короче. 
+Если существует много вариантов разбиения, выберите вариант, при котором пятая часть имеет наибольшую длину, при условии, что выполнены предыдущие условия. 
+Если последняя часть - пустая строка, не помещайте эту пустую строку в результирующий массив.
+Например, если длина кодового сообщения равна 17, то пять частей будут иметь длину 4, 4, 4, 4, 1. Части 1, 2, 3, 4 разделены поровну, а последняя часть длины 1 короче. 
+Если длина сообщения равна 16, то его части будут иметь длину 4, 4, 4, 4, 0. Части 1, 2, 3, 4 разделены поровну, а пятый участник останется дома, так как его часть является пустой строкой и не сохраняется.
+Пример со сдвигом = 1 :
+сообщение : "Я должен был знать, что у вас будет идеальный ответ для меня!!!"
+код : => ["ijJ tipvme ibw", "f lopxo uibu z", "pv xpvme ibwf", "b qfsgfdu botx", "fs gps nf!!!"].
+Напишите функцию кодирования и декодирования сообщений по алгоритму шифрования Цезаря.
+
+```swift
+func splitTheString(_ n: Int) -> [Int] {
+    if n % 5 == 0 { return Array(repeating: n / 5, count: 5) }
+    var n = n
+    var result = [Int]()
+    let average = Int((Double(n) / 5).rounded(.up))
+    for _ in 1...5 {
+        if n == 0 {
+            result.append(0)
+        } else if n - average >= 0 {
+            result.append(average)
+            n -= average
+        } else {
+            result.append(n)
+            n = 0
+        }
+    }
+    return result
+}
+
+func encode(_ s: String, _ shift: Int) -> [String] {
+    let strArr = s.map{ $0 }
+    let shift = UInt8(shift)
+    var newAscii = Character((s.first!).lowercased()).asciiValue! + shift
+    if newAscii > 122 {
+        newAscii -= 26
+    }
+    var codedStr = String((s.first!).lowercased()) + String(UnicodeScalar(newAscii))
+    for char in strArr {
+        if ("A"..."Z").contains(char) {
+            var asciiCode = char.asciiValue! + shift
+            if asciiCode > 90 {
+                asciiCode -= 26
+            }
+            codedStr += String(UnicodeScalar(asciiCode))
+        } else if ("a"..."z").contains(char) {
+            var asciiCode = char.asciiValue! + shift
+            if asciiCode > 122 {
+                asciiCode -= 26
+            }
+            codedStr += String(UnicodeScalar(asciiCode))
+        } else {
+            codedStr += String(char)
+        }
+    }
+    let spl = splitTheString(codedStr.count)
+    var (str1, str2, str3, str4, str5) = ("", "", "", "", "")
+    for (index,char) in codedStr.enumerated() {
+        switch index {
+        case 0..<spl[0]: str1 += String(char)
+        case spl[0]..<(spl[0] + spl[1]): str2 += String(char)
+        case (spl[0] + spl[1])..<(spl[0] + spl[1] + spl[2]): str3 += String(char)
+        case (spl[0] + spl[1] + spl[2])..<(spl[0] + spl[1] + spl[2] + spl[3]): str4 += String(char)
+        default: str5 += String(char)
+        }
+    }
+    return !str5.isEmpty ? [str1, str2, str3, str4, str5] : [str1, str2, str3, str4]
+}
+
+func decode(_ arr: [String]) -> String {
+    var codeStr = arr.reduce("", +)
+    let first = codeStr.removeFirst().asciiValue!
+    let second = codeStr.removeFirst().asciiValue!
+    let shift = second - first
+    var decodedStr = ""
+    for char in codeStr {
+        if ("A"..."Z").contains(char) {
+            var asciiCode = char.asciiValue! - shift
+            if asciiCode < 65 {
+                asciiCode += 26
+            }
+            decodedStr += String(UnicodeScalar(asciiCode))
+        } else if ("a"..."z").contains(char) {
+            var asciiCode = char.asciiValue! - shift
+            while asciiCode < 97 {
+                asciiCode += 26
+            }
+            decodedStr += String(UnicodeScalar(asciiCode))
+        } else {
+            decodedStr += String(char)
+        }
+    }
+    return decodedStr
+}
+```
+
+
+
+
 
 
 
