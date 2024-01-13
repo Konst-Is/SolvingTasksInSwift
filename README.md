@@ -531,6 +531,55 @@ func shiftedDiff(_ s1: String, _ s2: String) -> Int? {
     return result
 }
 ```
+---
+
+Необходимо написать алгоритм, который уплощает структуру массивов до двух уровней. 
+Это означает, что каждый массив, находящийся на втором уровне, будет слит со своим родителем. Сохраняются только два уровня.
+
+Пустые массивы игнорируются.
+
+```
+var array = [1, [2, 3], [4, 5, [6, 7, 8], 9, 10, [11, [12, [13, 14], 15], 16], 17], 18];
+flattenTwoLevels(array); // should return [1,[2,3],[4,5,6,7,8,9,10,11,12,13,14,15,16,17], 18]
+
+flattenTwoLevels([1,[2, 3, [], [4, [], 5]]]) // should return [1,[2,3,4,5]]
+```
+
+```swift
+func flattenedArray(array: [Any]) -> [Int] {
+    var result = [Int]()
+    for element in array {
+        if element is Int {
+            result.append(element as! Int)
+        } else if element is [Any] {
+            let value = flattenedArray(array: element as! [Any])
+                for number in value {
+                    result.append(number)
+            }
+        }
+    }
+    return result
+}
+
+func flattenTwoLevels(_ arr: [Any]) -> [Any] {
+    var result = [Any]()
+    for element in arr {
+        if element is Int {
+            result.append(element)
+        } else if element is [Int] {
+            result.append(element)
+        } else if element is [Any] {
+            let value = flattenedArray(array: element as! [Any])
+            var newResult = [Int]()
+                for i in value {
+                    newResult.append(i)
+            }
+            result.append(newResult)
+        }
+    }
+    return result
+}
+```
 
 
 
