@@ -931,9 +931,29 @@ func countBits(_ n: Int) -> Int {
   return result
 }
 ```
+---
 
 
+Даны два целых числа a, b, найдите их сумму, НО не разрешается использовать операторы + и -.
 
+Числа (a,b) могут быть положительными, отрицательными значениями или нулями.
+
+Возвращаемое значение будет целым числом.
+
+```swift
+func add(_ x: Int, _ y: Int) -> Int {
+    guard x != 0 else { return y }
+    guard y != 0 else { return x }
+    var x = x
+    var y = y
+    while y != 0 {
+        let shift = x & y
+        x = x ^ y
+        y = shift << 1
+    }
+    return x
+}
+```
 
 
 
