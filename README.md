@@ -954,6 +954,50 @@ func add(_ x: Int, _ y: Int) -> Int {
     return x
 }
 ```
+---
+
+
+Дана последовательность u, где u определяется следующим образом:
+
+Число u(0) = 1
+Для каждого x в u, тогда y = 2 * x + 1 и z = 3 * x + 1 также должны быть в u.
+Других чисел в u нет.
+Например: u = [1, 3, 4, 7, 9, 10, 13, 15, 19, 21, 22, 27, ...].
+
+1 дает 3 и 4, тогда 3 дает 7 и 10, 4 дает 9 и 13, тогда 7 дает 15 и 22 и так далее...
+
+Задача:
+
+При заданном параметре n функция dblLinear() возвращает элемент u(n) упорядоченной по возрастанию последовательности u (в которой нет дубликатов).
+
+Пример:
+
+dbl_linear(10) должна вернуть 22
+
+Алгоритм должен быть эффективным.
+
+```swift
+func dblLinear(_ n: Int) -> Int {
+    guard n != 0 else { return 1 }
+    var result = Array(repeating: 1, count: n + 1)
+    var firstIndex = 0
+    var secondIndex = 0
+    
+    for i in 1...n {
+      result[i] = min(2 * result[firstIndex] + 1, 3 * result[secondIndex] + 1)
+        if result[i] == (2 * result[firstIndex] + 1) {
+            firstIndex += 1
+        }
+        if result[i] == (3 * result[secondIndex] + 1) {
+            secondIndex += 1
+        }
+    }
+    return result[n]
+}
+```
+
+
+
 
 
 
