@@ -1012,6 +1012,27 @@ func dblLinear(_ n: Int) -> Int {
     return result[n]
 }
 ```
+---
+
+
+Написать функцию, которая находит корни квадратного уравнения `axˆ2 + bx + c = 0`
+
+```swift
+func findTheRootsOfAQuadraticEquation (a: Int, b: Int, c: Int) -> [Double]? {
+    guard !(a == 0 && b == 0) else { return nil }
+    guard a != 0 else { return [-Double(c) / Double(b)] }
+
+    let discriminant = b * b - 4 * a * c
+    guard discriminant >= 0 else { return nil }
+    guard discriminant != 0 else { return [-Double(b) / 2 / Double(a)] }
+
+    let sqrtDiscr = sqrt(Double(discriminant))
+    return [(-Double(b) + sqrtDiscr) / 2 / Double(a), (-Double(b) - sqrtDiscr) / 2 / Double(a)]
+}
+
+print(findTheRootsOfAQuadratiEquation(a: 1, b: 6, c: 5)) // Optional([-1.0, -5.0])
+```
+
 
 
 
