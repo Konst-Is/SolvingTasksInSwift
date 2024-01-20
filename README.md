@@ -92,7 +92,7 @@ print(findTheMostCommonElements(array: items, k: 3)) // [2, 1, 3]
 
 ```swift
 func checkStr(str: String, template: String) -> Bool {
-    guard !str.isEmpty, str.count < template.count else { return false }
+    guard !str.isEmpty, str.count >= template.count else { return false }
     
     // Получаем словарь частот из исходной строки и из строки-шаблона
     let dictStr = str.reduce(into: [:]) {$0[$1, default: 0] += 1}
