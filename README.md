@@ -91,14 +91,13 @@ print(findTheMostCommonElements(array: items, k: 3)) // [2, 1, 3]
 Дана строка. Проверить, есть ли в ней буквы из которых можно собрать слово "TINKOFF"
 
 ```swift
+// Вариант 1. Получаем словарь частот из исходной строки и из строки-шаблона. Проходим по ключам-значениям словаря частот dictTemplate, проверяем наличие символов и их количество (оно должно быть больше или равно) в dictStr
 func checkStr(str: String, template: String) -> Bool {
     guard !str.isEmpty, str.count >= template.count else { return false }
-    
-    // Получаем словарь частот из исходной строки и из строки-шаблона
+     
     let dictStr = str.reduce(into: [:]) {$0[$1, default: 0] += 1}
     let dictTemplate = template.reduce(into: [:]) {$0[$1, default: 0] += 1}
     
-    // Проходим по ключам-значениям словаря частот dictTemplate, проверяем наличие символов и их количество (оно должно быть больше или равно) в dictStr
     for (key, value) in dictTemplate {
         if dictStr[key, default: 0] < value {
             return false
@@ -106,6 +105,24 @@ func checkStr(str: String, template: String) -> Bool {
     }
     return true
 }
+
+// Вариант 2. Итерируем по проверяемой строке. Как только находим символ из шаблона, удаляем его из шаблона. Как только строка-шаблон станет пустой, возвращаем true.
+func checkStr(str: String, template: String) -> Bool {
+    guard !str.isEmpty, str.count >= template.count else { return false }
+    
+    var template = template
+    for symbol in str {
+        if template.contains(symbol) {
+            template.remove(at: template.firstIndex(of: symbol)!)
+            print(template)
+        }
+        if template.isEmpty {
+            return true
+        }
+    }
+    return false
+}
+
 
 var str = "AbTNIONdsKmOFtFYF"
 var template = "TINKOFF" 
